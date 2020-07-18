@@ -52,7 +52,7 @@ class UserRegister(Resource):
 
             confirmation = ConfirmationModel(user.id)
             confirmation.save_to_db()
-            user.send_confirmation_email()
+           # user.send_confirmation_email()
             return {"message": SUCCESS_REGISTER_MESSAGE}, 201
         except MailGunException as e:
             user.delete_from_db()  # rollback
