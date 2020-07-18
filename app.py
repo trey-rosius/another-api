@@ -15,18 +15,27 @@ from resources.confirmation import Confirmation, ConfirmationByUser
 from dotenv import load_dotenv
 
 load_dotenv(".env", verbose=True)
-from oa import oauth
+#from oa import oauth
 from flask_uploads import configure_uploads, patch_request_class
 from resources.image_resource import ImageUpload, Image, AvatarUpload, Avatar
 from libs.image_helper import IMAGE_SET
-from resources.github_login import GithubLogin,GithubAuthorize
+#from resources.github_login import GithubLogin,GithubAuthorize
 
 app = Flask(__name__)
 
-app.config.from_object("default_config")
-app.config.from_envvar("APPLICATION_SETTINGS")
+DEBUG =True
+SQLALCHEMY_DATABASE_URI ="sqlite:///data.db"
+SQLALCHEMY_TRACK_MODIFICATIONS=False
+PROPAGATE_EXCEPTIONS=True
+#SECRET_KEY=os.environ["APP_SECRET_KEY"] or "you-will-not-ever-know"
+SECRET_KEY="you-will-not-ever-know"
+JWT_BLACKLIST_ENABLED=True
+UPLOADED_IMAGES_DEST=os.path.join("static","images")
+JWT_BLACKLIST_TOKEN_CHECKS=["access","refresh"]
+#app.config.from_object("default_config")
+#app.config.from_envvar("APPLICATION_SETTINGS")
 patch_request_class(app, 10 * 1024 * 1024)  # 10MB max size
-configure_uploads(app, IMAGE_SET)
+#configure_uploads(app, IMAGE_SET)
 api = Api(app)
 
 
@@ -64,13 +73,13 @@ api.add_resource(ImageUpload, "/upload/image")
 api.add_resource(Image, '/image/<string:filename>')
 api.add_resource(AvatarUpload, '/upload/avatar')
 api.add_resource(Avatar, '/avatar/<int:user_id>')
-api.add_resource(GithubLogin, '/login/github')
-api.add_resource(GithubAuthorize, '/login/github/authorized',endpoint = "github.authorized")
+#api.add_resource(GithubLogin, '/login/github')
+#api.add_resource(GithubAuthorize, '/login/github/authorized',endpoint = "github.authorized")
 api.add_resource(SetPassword, '/user/password')
 
 
 if __name__ == "__main__":
     db.init_app(app)
     ma.init_app(app)
-    oauth.init_app(app)
+    #oauth.init_app(app)
     app.run(port=5000, debug=True)
